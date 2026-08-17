@@ -7,13 +7,13 @@
 
 int main() {
     try {
-        Window window(1280, 720, "MyRenderer");
+        const Window window(1280, 720, "MyRenderer");
 
-        Shader shader("assets/shaders/basic.vert", "assets/shaders/basic.frag");
-        Mesh triangle = Mesh::CreateTriangle();
+        const Shader shader("assets/shaders/basic.vert", "assets/shaders/basic.frag");
+        const Mesh triangle = Mesh::CreateTriangle();
 
         while (!window.ShouldClose()) {
-            window.PollEvents();
+            Window::PollEvents();
 
             glClearColor(0.10f, 0.10f, 0.12f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

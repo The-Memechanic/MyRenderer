@@ -7,12 +7,12 @@
 #include <stdexcept>
 
 namespace {
-    void FramebufferSizeCallback(GLFWwindow* window, int width, int height) {
+    void FramebufferSizeCallback(GLFWwindow* window, const int width, const int height) {
         glViewport(0, 0, width, height);
     }
 }
 
-Window::Window(int width, int height, const std::string& title)
+Window::Window(const int width, const int height, const std::string& title)
     : m_Width(width), m_Height(height) {
 
     if (!glfwInit()) {
@@ -57,7 +57,7 @@ bool Window::ShouldClose() const {
     return glfwWindowShouldClose(m_Handle);
 }
 
-void Window::PollEvents() const {
+void Window::PollEvents() {
     glfwPollEvents();
 }
 

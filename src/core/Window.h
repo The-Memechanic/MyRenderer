@@ -13,7 +13,8 @@ public:
     Window& operator=(const Window&) = delete;
 
     bool ShouldClose() const;
-    void PollEvents() const;
+
+    static void PollEvents();
     void SwapBuffers() const;
 
     int GetWidth() const { return m_Width; }

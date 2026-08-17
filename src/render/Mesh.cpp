@@ -79,5 +79,5 @@ Mesh Mesh::CreateTriangle() {
 
     const std::vector<unsigned int> indices = { 0, 1, 2 };
 
-    return Mesh(vertices, indices);
+    return {vertices, indices};
 }
