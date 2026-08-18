@@ -1,0 +1,42 @@
+MyRenderer/
+├── CMakeLists.txt
+├── vendor/                      # third-party libs (equivalent to their "Libraries" folder)
+│   ├── glad/                    # OpenGL function loader (glad.c + include/)
+│   ├── glfw/                    # window/context/input (or fetched via CMake)
+│   ├── glm/                     # math library (header-only)
+│   ├── stb/                     # stb_image.h for texture loading
+│   └── tinygltf/                # glTF 2.0 loader (header-only: tiny_gltf.h)
+│
+├── assets/
+│   ├── shaders/
+│   │   ├── basic.vert / basic.frag
+│   │   ├── phong.vert / phong.frag
+│   │   └── light_source.vert / light_source.frag
+│   ├── models/                  # .gltf/.glb files
+│   └── textures/
+│
+├── src/
+│   ├── main.cpp
+│   ├── core/
+│   │   ├── Window.h / .cpp          # GLFW window + context creation, input callbacks
+│   │   └── Application.h / .cpp     # owns the render loop
+│   │
+│   ├── render/
+│   │   ├── Shader.h / .cpp          # compile/link, uniform setters
+│   │   ├── Mesh.h / .cpp            # VAO/VBO/EBO wrapper + Draw()
+│   │   ├── Texture.h / .cpp         # stb_image loading, binding
+│   │   └── Model.h / .cpp           # glTF parsing (tinygltf) → builds Mesh list
+│   │
+│   ├── scene/
+│   │   ├── Camera.h / .cpp          # perspective, view matrix, yaw/pitch, movement
+│   │   ├── Transform.h              # position/rotation/scale → model matrix
+│   │   ├── Light.h                  # base struct/class
+│   │   ├── PointLight.h
+│   │   ├── SpotLight.h
+│   │   ├── DirectionalLight.h
+│   │   └── Scene.h / .cpp           # holds objects + lights, iterates for draw calls
+│   │
+│   └── entity/
+│       └── GameObject.h / .cpp      # Transform + Model + material reference
+│
+└── build/                        # CMake build directory (gitignored)

@@ -8,6 +8,7 @@
 #include "render/Shader.h"
 #include "render/Mesh.h"
 #include "scene/Transform.h"
+#include "scene/Camera.h"
 
 class Application {
 public:
@@ -26,5 +27,7 @@ private:
     Mesh m_mesh;
 
     Transform m_transform;
+    Camera m_camera;
+    float m_time = 0.0f;
 };
 

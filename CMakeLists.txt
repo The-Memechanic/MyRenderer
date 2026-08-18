@@ -59,7 +59,9 @@ add_executable(MyRenderer ${MY_RENDERER_SOURCES}
         src/core/Application.cpp
         src/core/Application.h
         src/scene/Transform.cpp
-        src/scene/Transform.h)
+        src/scene/Transform.h
+        src/scene/Camera.cpp
+        src/scene/Camera.h)
 
 target_include_directories(MyRenderer PRIVATE src)
 
