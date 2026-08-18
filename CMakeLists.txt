@@ -55,7 +55,11 @@ file(GLOB_RECURSE MY_RENDERER_SOURCES CONFIGURE_DEPENDS
 
 add_executable(MyRenderer ${MY_RENDERER_SOURCES}
         src/render/Mesh.cpp
-        src/render/Mesh.h)
+        src/render/Mesh.h
+        src/core/Application.cpp
+        src/core/Application.h
+        src/scene/Transform.cpp
+        src/scene/Transform.h)
 
 target_include_directories(MyRenderer PRIVATE src)
 

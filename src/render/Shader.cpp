@@ -36,11 +36,11 @@ unsigned int Shader::CompileStage(unsigned int stageType, const std::string& sou
 }
 
 Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath) {
-    std::string vertexSrc = ReadFile(vertexPath);
-    std::string fragmentSrc = ReadFile(fragmentPath);
+    const std::string vertexSrc = ReadFile(vertexPath);
+    const std::string fragmentSrc = ReadFile(fragmentPath);
 
-    unsigned int vertexShader = CompileStage(GL_VERTEX_SHADER, vertexSrc, vertexPath);
-    unsigned int fragmentShader = CompileStage(GL_FRAGMENT_SHADER, fragmentSrc, fragmentPath);
+    const unsigned int vertexShader = CompileStage(GL_VERTEX_SHADER, vertexSrc, vertexPath);
+    const unsigned int fragmentShader = CompileStage(GL_FRAGMENT_SHADER, fragmentSrc, fragmentPath);
 
     m_ProgramId = glCreateProgram();
     glAttachShader(m_ProgramId, vertexShader);
@@ -68,15 +68,15 @@ void Shader::Bind() const {
     glUseProgram(m_ProgramId);
 }
 
-void Shader::SetBool(const std::string& name, bool value) const {
+void Shader::SetBool(const std::string& name, const bool value) const {
     glUniform1i(glGetUniformLocation(m_ProgramId, name.c_str()), static_cast<int>(value));
 }
 
-void Shader::SetInt(const std::string& name, int value) const {
+void Shader::SetInt(const std::string& name, const int value) const {
     glUniform1i(glGetUniformLocation(m_ProgramId, name.c_str()), value);
 }
 
-void Shader::SetFloat(const std::string& name, float value) const {
+void Shader::SetFloat(const std::string& name, const float value) const {
     glUniform1f(glGetUniformLocation(m_ProgramId, name.c_str()), value);
 }
 

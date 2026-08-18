@@ -30,8 +30,11 @@ public:
     void Draw() const;
 
     // Hardcoded single-triangle mesh, useful as the very first thing to get
-    // on screen before real geometry/model loading exists.
+    // on screen
     static Mesh CreateTriangle();
+
+    // Getting more complex
+    static Mesh CreateCube();
 
 private:
     unsigned int m_Vao = 0;
