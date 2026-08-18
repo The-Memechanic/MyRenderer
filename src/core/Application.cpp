@@ -27,10 +27,10 @@ Application::Application()
 }
 
 void Application::Run() {
-    float lastFrame = static_cast<float>(glfwGetTime());
+    auto lastFrame = static_cast<float>(glfwGetTime());
 
     while (!m_window.ShouldClose()) {
-        const float currentFrame = static_cast<float>(glfwGetTime());
+        const auto currentFrame = static_cast<float>(glfwGetTime());
         const float deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
@@ -55,11 +55,20 @@ void Application::ProcessInput() {
 
 void Application::Update(const float deltaTime) {
     // matrix expects input rotation in degrees
-    m_transform.rotation.x = 10.0f;
+    // rotate it a little to see more faces
+    m_transform.rotation.x = 0.0f;
     m_transform.rotation.y = -20.0f;
-    m_transform.rotation.z += 50.0f * deltaTime;
-    m_transform.scale.y = 1.0f + 0.5f * glm::sin(10.0f * m_time);
-    m_transform.scale.x = 1.0f + 0.5f * glm::sin(-10.0f * m_time);
+    //m_transform.rotation.z += 50.0f * deltaTime; // funky rotation woah!
+
+    // this is an attempt to recreate the vibe of the Toyota Yaris meme
+    constexpr float y_variance = 0.2f;
+    constexpr float xz_variance = 0.3f;
+    constexpr float wobble_velocity = 13.0f;
+    m_transform.scale.y = 1.0f + y_variance * glm::sin(wobble_velocity * m_time);
+    m_transform.scale.x = 1.0f + xz_variance * glm::sin(-wobble_velocity * m_time);
+    m_transform.scale.z = 1.0f + xz_variance * glm::sin(-wobble_velocity * m_time);
+    m_transform.position.y = y_variance * 0.5f * glm::sin(wobble_velocity * m_time);
+    //m_transform.position.z = 2.0f * glm::sin(wobble_velocity * 0.5f * m_time);
 
     m_time += deltaTime;
 }
