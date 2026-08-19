@@ -20,7 +20,8 @@ Application::Application()
       m_shader("assets/shaders/basic.vert", "assets/shaders/basic.frag"),
       m_mesh(Mesh::CreateCube()),
       m_camera(glm::vec3(0.0f, 0.0f, 3.0f),
-                glm::vec3(0.0f, 0.0f, 0.0f))
+                -90.0f,
+                0.0f)
 {
     m_transform.position = glm::vec3(0.0f, 0.0f, 0.0f);
     glEnable(GL_DEPTH_TEST);
@@ -34,7 +35,8 @@ void Application::Run() {
         const float deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
-        ProcessInput();
+        Window::PollEvents();
+        ProcessInput(deltaTime);
         Update(deltaTime);
         Render();
 
@@ -49,8 +51,35 @@ void Application::Run() {
     }
 }
 
-void Application::ProcessInput() {
-    Window::PollEvents();
+void Application::ProcessInput(float deltaTime) {
+    GLFWwindow* handle = m_window.GetHandle();
+
+    // Movement
+    if (glfwGetKey(handle, GLFW_KEY_W) == GLFW_PRESS)
+        m_camera.ProcessMovement(CameraMovement::Forward, deltaTime);
+    if (glfwGetKey(handle, GLFW_KEY_S) == GLFW_PRESS)
+        m_camera.ProcessMovement(CameraMovement::Backward, deltaTime);
+    if (glfwGetKey(handle, GLFW_KEY_A) == GLFW_PRESS)
+        m_camera.ProcessMovement(CameraMovement::Left, deltaTime);
+    if (glfwGetKey(handle, GLFW_KEY_D) == GLFW_PRESS)
+        m_camera.ProcessMovement(CameraMovement::Right, deltaTime);
+    if (glfwGetKey(handle, GLFW_KEY_SPACE) == GLFW_PRESS)
+        m_camera.ProcessMovement(CameraMovement::Up, deltaTime);
+    if (glfwGetKey(handle, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+        m_camera.ProcessMovement(CameraMovement::Down, deltaTime);
+
+    // Rotation
+    if (glfwGetKey(handle, GLFW_KEY_UP) == GLFW_PRESS)
+        m_camera.ProcessRotation(CameraRotation::LookUp, deltaTime);
+    if (glfwGetKey(handle, GLFW_KEY_DOWN) == GLFW_PRESS)
+        m_camera.ProcessRotation(CameraRotation::LookDown, deltaTime);
+    if (glfwGetKey(handle, GLFW_KEY_LEFT) == GLFW_PRESS)
+        m_camera.ProcessRotation(CameraRotation::LookLeft, deltaTime);
+    if (glfwGetKey(handle, GLFW_KEY_RIGHT) == GLFW_PRESS)
+        m_camera.ProcessRotation(CameraRotation::LookRight, deltaTime);
+
+    if (glfwGetKey(handle, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(handle, true);
 }
 
 void Application::Update(const float deltaTime) {

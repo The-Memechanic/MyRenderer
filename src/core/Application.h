@@ -18,7 +18,7 @@ public:
     void Run();
 
 private:
-    static void ProcessInput();
+    void ProcessInput(float deltaTime);
     void Update(float deltaTime);
     void Render() const;
 

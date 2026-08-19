@@ -6,15 +6,28 @@
 #include <cmath>
 #include <glm/gtc/matrix_transform.hpp>
 
-Camera::Camera(const glm::vec3 position, const glm::vec3 target, const glm::vec3 up)
-    : m_position(position), m_target(target), m_up(up)
-{}
+#include "glm/gtc/quaternion.hpp"
+
+Camera::Camera(const glm::vec3 position, const float yaw, const float pitch, const glm::vec3 up)
+    : m_position(position), m_worldUp(up), m_yaw(yaw), m_pitch(pitch)
+{
+    UpdateVectors();
+}
+
+void Camera::UpdateVectors() {
+    glm::vec3 front;
+    front.x = glm::cos(glm::radians(m_yaw)) * glm::cos(glm::radians(m_pitch));
+    front.y = glm::sin(glm::radians(m_pitch));
+    front.z = glm::sin(glm::radians(m_yaw)) * glm::cos(glm::radians(m_pitch));
+    m_front = glm::normalize(front);
+    m_right = glm::normalize(glm::cross(m_front, m_worldUp));
+}
 
 // We could just use glm::lookAt, but for educational purposes we build the matrix from scratch
 glm::mat4 Camera::GetViewMatrix() const {
-    const glm::vec3 f = glm::normalize(m_target - m_position);      // forward vector
-    const glm::vec3 s = glm::normalize(glm::cross(f, m_up));    // right side
-    const glm::vec3 u = glm::cross(s, f);                         // recomputed up vector
+    const glm::vec3 f = m_front;                // forward vector
+    const glm::vec3 s = m_right;                // right side
+    const glm::vec3 u = glm::cross(s, f);   // recomputed up vector
 
     const glm::mat4 viewMatrix(
         s.x, u.x, -f.x, 0.0f,
@@ -38,6 +51,33 @@ glm::mat4 Camera::GetProjectionMatrix(const float aspectRatio) const {
     );
 
     return projectionMatrix;
+}
+
+void Camera::ProcessMovement(const CameraMovement direction, const float deltaTime) {
+    const float velocity = m_moveSpeed * deltaTime;
+
+    switch (direction) {
+        case CameraMovement::Forward:  m_position += m_front * velocity; break;
+        case CameraMovement::Backward: m_position -= m_front * velocity; break;
+        case CameraMovement::Left:     m_position -= m_right * velocity; break;
+        case CameraMovement::Right:    m_position += m_right * velocity; break;
+        case CameraMovement::Up:       m_position += m_worldUp * velocity; break;
+        case CameraMovement::Down:     m_position -= m_worldUp * velocity; break;
+    }
+}
+
+void Camera::ProcessRotation(CameraRotation direction, float deltaTime) {
+    const float amount = m_rotateSpeed * deltaTime;
+
+    switch (direction) {
+        case CameraRotation::LookLeft:  m_yaw -= amount; break;
+        case CameraRotation::LookRight: m_yaw += amount; break;
+        case CameraRotation::LookUp:    m_pitch += amount; break;
+        case CameraRotation::LookDown:  m_pitch -= amount; break;
+    }
+
+    m_pitch = glm::clamp(m_pitch, -89.0f, 89.0f); // avoid flipping the camera
+    UpdateVectors();
 }
 
 
