@@ -7,6 +7,7 @@
 #include "core/Window.h"
 #include "render/Shader.h"
 #include "render/Mesh.h"
+#include "render/Texture.h"
 #include "scene/Transform.h"
 #include "scene/Camera.h"
 
@@ -24,6 +25,7 @@ private:
 
     Window m_window;
     Shader m_shader;
+    Texture m_texture;
     Mesh m_mesh;
 
     Transform m_transform;

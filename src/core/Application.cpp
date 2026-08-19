@@ -18,6 +18,7 @@ namespace {
 Application::Application()
     : m_window(1280, 720, "MyRenderer"),
       m_shader("assets/shaders/basic.vert", "assets/shaders/basic.frag"),
+      m_texture("assets/textures/red-brick/red_brick_diff_1k.jpg"),
       m_mesh(Mesh::CreateCube()),
       m_camera(glm::vec3(0.0f, 0.0f, 3.0f),
                 -90.0f,
@@ -25,6 +26,9 @@ Application::Application()
 {
     m_transform.position = glm::vec3(0.0f, 0.0f, 0.0f);
     glEnable(GL_DEPTH_TEST);
+
+    m_shader.Bind();
+    m_shader.SetInt("uTexture", 0);
 }
 
 void Application::Run() {
@@ -93,10 +97,10 @@ void Application::Update(const float deltaTime) {
     constexpr float y_variance = 0.2f;
     constexpr float xz_variance = 0.3f;
     constexpr float wobble_velocity = 13.0f;
-    m_transform.scale.y = 1.0f + y_variance * glm::sin(wobble_velocity * m_time);
-    m_transform.scale.x = 1.0f + xz_variance * glm::sin(-wobble_velocity * m_time);
-    m_transform.scale.z = 1.0f + xz_variance * glm::sin(-wobble_velocity * m_time);
-    m_transform.position.y = y_variance * 0.5f * glm::sin(wobble_velocity * m_time);
+    //m_transform.scale.y = 1.0f + y_variance * glm::sin(wobble_velocity * m_time);
+    //m_transform.scale.x = 1.0f + xz_variance * glm::sin(-wobble_velocity * m_time);
+    //m_transform.scale.z = 1.0f + xz_variance * glm::sin(-wobble_velocity * m_time);
+    //m_transform.position.y = y_variance * 0.5f * glm::sin(wobble_velocity * m_time);
     //m_transform.position.z = 2.0f * glm::sin(wobble_velocity * 0.5f * m_time);
 
     m_time += deltaTime;
@@ -107,6 +111,7 @@ void Application::Render() const {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     m_shader.Bind();
+    m_texture.Bind(0);
 
     m_shader.SetMat4("uModel", m_transform.GetModelMatrix());
     m_shader.SetMat4("uView", m_camera.GetViewMatrix());

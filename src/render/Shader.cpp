@@ -15,6 +15,7 @@ std::string Shader::ReadFile(const std::string& path) {
     }
     std::stringstream buffer;
     buffer << file.rdbuf();
+    std::cout << "Loaded shader from: " << path << " (" << buffer.str().size() << " bytes)\n";
     return buffer.str();
 }
 

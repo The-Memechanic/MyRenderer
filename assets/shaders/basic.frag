@@ -6,7 +6,8 @@ in vec2 TexCoords;
 
 out vec4 FragColor;
 
+uniform sampler2D uTexture;
+
 void main() {
-    // Placeholder: replace with Phong lighting once Camera/Light are wired up.
-    FragColor = vec4(VertexColor, 1.0);
+    FragColor = texture(uTexture, TexCoords);
 }

@@ -9,9 +9,9 @@
 
 // Matches the attribute layout in assets/shaders/basic.vert:
 //   location 0 -> position
-//   location 1 -> normal
-//   location 2 -> texcoords
-//   location 3 -> color
+//   location 1 -> color
+//   location 2 -> normal
+//   location 3 -> texture coordinates
 struct Vertex {
     glm::vec3 Position;
     glm::vec3 Color;

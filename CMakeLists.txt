@@ -61,7 +61,9 @@ add_executable(MyRenderer ${MY_RENDERER_SOURCES}
         src/scene/Transform.cpp
         src/scene/Transform.h
         src/scene/Camera.cpp
-        src/scene/Camera.h)
+        src/scene/Camera.h
+        src/render/Texture.cpp
+        src/render/Texture.h)
 
 target_include_directories(MyRenderer PRIVATE src)
 
@@ -85,8 +87,15 @@ endif ()
 # Copy assets (shaders, models, textures) next to the built executable so
 # relative paths in the code resolve correctly when run from CLion.
 # -----------------------------------------------------------------------------
-add_custom_command(TARGET MyRenderer POST_BUILD
+# Track all asset files so changes to them trigger a rebuild/copy
+file(GLOB_RECURSE ASSET_FILES CONFIGURE_DEPENDS ${CMAKE_SOURCE_DIR}/assets/*)
+
+add_custom_target(CopyAssets ALL
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${CMAKE_SOURCE_DIR}/assets
         $<TARGET_FILE_DIR:MyRenderer>/assets
+        DEPENDS ${ASSET_FILES}
+        COMMENT "Copying assets to build output"
 )
+
+add_dependencies(MyRenderer CopyAssets)
