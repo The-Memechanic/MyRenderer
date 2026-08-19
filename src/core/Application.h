@@ -10,6 +10,7 @@
 #include "render/Texture.h"
 #include "scene/Transform.h"
 #include "scene/Camera.h"
+#include "scene/PointLight.h"
 
 class Application {
 public:
@@ -29,7 +30,11 @@ private:
     Mesh m_mesh;
 
     Transform m_transform;
+    Transform m_lightTransform;
     Camera m_camera;
+    Shader m_lightShader;
+    PointLight m_pointLight;
+
     float m_time = 0.0f;
 };
 

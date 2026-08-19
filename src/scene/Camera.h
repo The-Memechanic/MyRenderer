@@ -19,6 +19,8 @@ public:
     glm::mat4 GetViewMatrix() const;
     glm::mat4 GetProjectionMatrix(float aspectRatio) const;
 
+    glm::vec3 GetPosition() const { return m_position; }
+
     void ProcessMovement(CameraMovement direction, float deltaTime);
     void ProcessRotation(CameraRotation direction, float deltaTime);
 

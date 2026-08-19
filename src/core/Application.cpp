@@ -10,6 +10,8 @@
 #include <chrono>
 #include <thread>
 
+#include "glm/ext/scalar_constants.hpp"
+
 namespace {
     constexpr float kTargetFPS = 60.0f;
     constexpr float kTargetFrameTime = 1.0f / kTargetFPS; // this is in seconds
@@ -17,12 +19,14 @@ namespace {
 
 Application::Application()
     : m_window(1280, 720, "MyRenderer"),
-      m_shader("assets/shaders/basic.vert", "assets/shaders/basic.frag"),
+      m_shader("assets/shaders/phong.vert", "assets/shaders/phong.frag"),
       m_texture("assets/textures/red-brick/red_brick_diff_1k.jpg"),
       m_mesh(Mesh::CreateCube()),
       m_camera(glm::vec3(0.0f, 0.0f, 3.0f),
                 -90.0f,
-                0.0f)
+                0.0f),
+      m_lightShader("assets/shaders/light.vert", "assets/shaders/light.frag"),
+      m_pointLight(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f))
 {
     m_transform.position = glm::vec3(0.0f, 0.0f, 0.0f);
     glEnable(GL_DEPTH_TEST);
@@ -93,16 +97,25 @@ void Application::Update(const float deltaTime) {
     m_transform.rotation.y = -20.0f;
     //m_transform.rotation.z += 50.0f * deltaTime; // funky rotation woah!
 
-    // this is an attempt to recreate the vibe of the Toyota Yaris meme
+    // point light showcase
+    constexpr float radius = 1.0f;
+    constexpr float rotationSpeed = 3.0f;
+    m_lightTransform.scale = glm::vec3(0.2f);
+    m_lightTransform.position.x = radius * glm::cos(rotationSpeed * m_time);
+    m_lightTransform.position.z = radius * glm::sin(rotationSpeed * m_time);
+    m_lightTransform.position.y = glm::cos(rotationSpeed * 0.5f * m_time);
+
+    // this is an attempt to recreate the vibe of the Toyota Yaris meme :)
     constexpr float y_variance = 0.2f;
     constexpr float xz_variance = 0.3f;
     constexpr float wobble_velocity = 13.0f;
-    //m_transform.scale.y = 1.0f + y_variance * glm::sin(wobble_velocity * m_time);
-    //m_transform.scale.x = 1.0f + xz_variance * glm::sin(-wobble_velocity * m_time);
-    //m_transform.scale.z = 1.0f + xz_variance * glm::sin(-wobble_velocity * m_time);
-    //m_transform.position.y = y_variance * 0.5f * glm::sin(wobble_velocity * m_time);
+    m_transform.scale.y = 1.0f + y_variance * glm::sin(wobble_velocity * m_time);
+    m_transform.scale.x = 1.0f + xz_variance * glm::sin(-wobble_velocity * m_time);
+    m_transform.scale.z = 1.0f + xz_variance * glm::sin(-wobble_velocity * m_time);
+    m_transform.position.y = y_variance * 0.5f * glm::sin(wobble_velocity * m_time);
     //m_transform.position.z = 2.0f * glm::sin(wobble_velocity * 0.5f * m_time);
 
+    m_pointLight.position = m_lightTransform.position;  // update the actual light position alongside the helper
     m_time += deltaTime;
 }
 
@@ -116,6 +129,15 @@ void Application::Render() const {
     m_shader.SetMat4("uModel", m_transform.GetModelMatrix());
     m_shader.SetMat4("uView", m_camera.GetViewMatrix());
     m_shader.SetMat4("uProjection", m_camera.GetProjectionMatrix(1280.0f / 720.0f));
+    m_shader.SetVec3("uViewPos", m_camera.GetPosition());
+    m_shader.SetFloat("uShininess", 32.0f);
+    m_pointLight.ApplyToShader(m_shader);
+    m_mesh.Draw();
 
+    m_lightShader.Bind();
+    m_lightShader.SetMat4("uModel", m_lightTransform.GetModelMatrix());
+    m_lightShader.SetMat4("uView", m_camera.GetViewMatrix());
+    m_lightShader.SetMat4("uProjection", m_camera.GetProjectionMatrix(1280.0f / 720.0f));
+    m_lightShader.SetVec3("uLightColor", m_pointLight._color);
     m_mesh.Draw();
 }

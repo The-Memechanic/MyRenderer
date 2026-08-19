@@ -21,6 +21,7 @@ public:
 private:
     unsigned int m_ProgramId = 0;
 
+    int GetUniformLocation(const std::string& name) const;
     static std::string ReadFile(const std::string& path);
     static unsigned int CompileStage(unsigned int stageType, const std::string& source, const std::string& debugName);
 };
