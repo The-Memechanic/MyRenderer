@@ -11,6 +11,7 @@
 #include "scene/Transform.h"
 #include "scene/Camera.h"
 #include "scene/PointLight.h"
+#include "scene/DirectionalLight.h"
 
 class Application {
 public:
@@ -34,6 +35,7 @@ private:
     Camera m_camera;
     Shader m_lightShader;
     PointLight m_pointLight;
+    DirectionalLight m_dirLight;
 
     float m_time = 0.0f;
 };

@@ -26,7 +26,8 @@ Application::Application()
                 -90.0f,
                 0.0f),
       m_lightShader("assets/shaders/light.vert", "assets/shaders/light.frag"),
-      m_pointLight(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f))
+      m_pointLight(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f)),
+      m_dirLight(glm::vec3(0.0f), glm::vec3(-0.5f, -1.0f, -0.6f), glm::vec3(1.0f))
 {
     m_transform.position = glm::vec3(0.0f, 0.0f, 0.0f);
     glEnable(GL_DEPTH_TEST);
@@ -126,14 +127,24 @@ void Application::Render() const {
     m_shader.Bind();
     m_texture.Bind(0);
 
+    // lights
+    constexpr bool hasPointLight = true;
+    constexpr bool hasDirLight = true;
+
+    m_shader.SetBool("uPointLightEnabled", hasPointLight);
+    m_shader.SetBool("uDirLightEnabled", hasDirLight);
+    if (hasPointLight) m_pointLight.ApplyToShader(m_shader);
+    if (hasDirLight) m_dirLight.ApplyToShader(m_shader);
+
+    // the cube
     m_shader.SetMat4("uModel", m_transform.GetModelMatrix());
     m_shader.SetMat4("uView", m_camera.GetViewMatrix());
     m_shader.SetMat4("uProjection", m_camera.GetProjectionMatrix(1280.0f / 720.0f));
     m_shader.SetVec3("uViewPos", m_camera.GetPosition());
     m_shader.SetFloat("uShininess", 32.0f);
-    m_pointLight.ApplyToShader(m_shader);
     m_mesh.Draw();
 
+    // point light helper
     m_lightShader.Bind();
     m_lightShader.SetMat4("uModel", m_lightTransform.GetModelMatrix());
     m_lightShader.SetMat4("uView", m_camera.GetViewMatrix());
