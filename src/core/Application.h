@@ -10,8 +10,9 @@
 #include "render/Texture.h"
 #include "scene/Transform.h"
 #include "scene/Camera.h"
-#include "scene/PointLight.h"
-#include "scene/DirectionalLight.h"
+#include "scene/light/PointLight.h"
+#include "scene/light/DirectionalLight.h"
+#include "scene/light/SpotLight.h"
 
 class Application {
 public:
@@ -36,6 +37,7 @@ private:
     Shader m_lightShader;
     PointLight m_pointLight;
     DirectionalLight m_dirLight;
+    SpotLight m_spotLight;
 
     float m_time = 0.0f;
 };

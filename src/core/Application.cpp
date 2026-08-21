@@ -27,7 +27,8 @@ Application::Application()
                 0.0f),
       m_lightShader("assets/shaders/light.vert", "assets/shaders/light.frag"),
       m_pointLight(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f)),
-      m_dirLight(glm::vec3(0.0f), glm::vec3(-0.5f, -1.0f, -0.6f), glm::vec3(1.0f))
+      m_dirLight(glm::vec3(0.0f), glm::vec3(-0.5f, -1.0f, -0.6f), glm::vec3(1.0f)),
+      m_spotLight(glm::vec3(1.0f, 2.0f, 1.0f), glm::vec3(-0.5f, -1.0f, -0.5f), 12.5f, 17.5f, glm::vec3(1.0f))
 {
     m_transform.position = glm::vec3(0.0f, 0.0f, 0.0f);
     glEnable(GL_DEPTH_TEST);
@@ -128,13 +129,16 @@ void Application::Render() const {
     m_texture.Bind(0);
 
     // lights
-    constexpr bool hasPointLight = true;
-    constexpr bool hasDirLight = true;
+    constexpr bool hasPointLight = false;
+    constexpr bool hasDirLight = false;
+    constexpr bool hasSpotLight = true;
 
     m_shader.SetBool("uPointLightEnabled", hasPointLight);
     m_shader.SetBool("uDirLightEnabled", hasDirLight);
+    m_shader.SetBool("uSpotLightEnabled", hasSpotLight);
     if (hasPointLight) m_pointLight.ApplyToShader(m_shader);
     if (hasDirLight) m_dirLight.ApplyToShader(m_shader);
+    if (hasSpotLight) m_spotLight.ApplyToShader(m_shader);
 
     // the cube
     m_shader.SetMat4("uModel", m_transform.GetModelMatrix());
@@ -145,10 +149,12 @@ void Application::Render() const {
     m_mesh.Draw();
 
     // point light helper
-    m_lightShader.Bind();
-    m_lightShader.SetMat4("uModel", m_lightTransform.GetModelMatrix());
-    m_lightShader.SetMat4("uView", m_camera.GetViewMatrix());
-    m_lightShader.SetMat4("uProjection", m_camera.GetProjectionMatrix(1280.0f / 720.0f));
-    m_lightShader.SetVec3("uLightColor", m_pointLight._color);
-    m_mesh.Draw();
+    if (hasPointLight) {
+        m_lightShader.Bind();
+        m_lightShader.SetMat4("uModel", m_lightTransform.GetModelMatrix());
+        m_lightShader.SetMat4("uView", m_camera.GetViewMatrix());
+        m_lightShader.SetMat4("uProjection", m_camera.GetProjectionMatrix(1280.0f / 720.0f));
+        m_lightShader.SetVec3("uLightColor", m_pointLight._color);
+        m_mesh.Draw();
+    }
 }

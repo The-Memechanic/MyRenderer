@@ -64,11 +64,13 @@ add_executable(MyRenderer ${MY_RENDERER_SOURCES}
         src/scene/Camera.h
         src/render/Texture.cpp
         src/render/Texture.h
-        src/scene/Light.h
-        src/scene/PointLight.cpp
-        src/scene/PointLight.h
-        src/scene/DirectionalLight.cpp
-        src/scene/DirectionalLight.h)
+        src/scene/light/Light.h
+        src/scene/light/PointLight.cpp
+        src/scene/light/PointLight.h
+        src/scene/light/DirectionalLight.cpp
+        src/scene/light/DirectionalLight.h
+        src/scene/light/SpotLight.cpp
+        src/scene/light/SpotLight.h)
 
 target_include_directories(MyRenderer PRIVATE src)
 
